@@ -88,3 +88,6 @@ for (let i = 0; i < accordionBtn.length; i++) {
 }
 
 
+document.querySelectorAll('ion-icon').forEach((icon) => {
+  icon.removeAttribute('title'); // Remove the default title
+});
