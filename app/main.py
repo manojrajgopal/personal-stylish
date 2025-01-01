@@ -11,6 +11,8 @@ def main():
             print(f"New subscription: {email}")
     return render_template('index.html', title='Outfit Recommender')  # Flask looks in 'templates' by default
 
-
+@app.route('/login')
+def login():
+    return render_template('login.html', title='Fashion Hub') #Login Page
 if __name__ == '__main__':
     app.run(debug=True)
