@@ -50,7 +50,7 @@ class Login:
             password = request.form['password']
 
             # Safely execute the query to check login credentials
-            query = text('SELECT username, email FROM login WHERE username=:username AND password=:password')
+            query = text('SELECT username, email, phone, name FROM login WHERE username=:username AND password=:password')
             result = self.db.session.execute(query, {'username': username, 'password': password})
             user = result.fetchone()  # Fetch the first matching row
 
@@ -58,7 +58,7 @@ class Login:
 
             if user:
                 # Store user information in the session
-                session['user'] = {'username': user[0], 'email': user[1]}  # username = user[0], email = user[1]
+                session['user'] = {'username': user[0], 'email': user[1], 'phone': user[2], 'name':user[3]}  # username = user[0], email = user[1], phone = user[2]
                 return redirect(url_for('main'))  # Redirect to the dashboard
             else:
                 return render_template('login.html', message="Invalid username or password")
@@ -114,7 +114,9 @@ class Profile:
             # Retrieve user information from the session
             username = session['user']['username']
             email = session['user']['email']
-            return render_template('profile.html', username=username, email=email)
+            phone = session['user'].get('phone', 'Not Provided')    # Default value if 'phone' is missing
+            name = session['user']['name']  
+            return render_template('profile.html', username=username, email=email, phone=phone, name=name)
         else:
             # Redirect to login if the user is not logged in
             return redirect(url_for('login'))
