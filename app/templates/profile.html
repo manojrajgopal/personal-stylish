@@ -182,7 +182,7 @@
           </li>
 
           <li class="navbar-item">
-            <button class="navbar-link" data-nav-link>Home</button>
+            <button onclick="window.location.href='{{ url_for('main') }}'" class="navbar-link" data-nav-link>Home</button>
           </li>
 
           <li class="navbar-item">
@@ -817,7 +817,7 @@
                     <ion-icon name="eye-outline"></ion-icon>
                   </div>
 
-                  <img src="{{ url_for('static', filename = 'images/profile/images/project-3.jpg') }}" alt="fundo" loading="lazy">
+                  <img src="{{ url_for('static', filename = 'images/profile/project-3.jpg') }}" alt="fundo" loading="lazy">
                 </figure>
 
                 <h3 class="project-title">Fundo</h3>

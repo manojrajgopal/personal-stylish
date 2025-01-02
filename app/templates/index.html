@@ -37,7 +37,7 @@
   <!--
     - MODAL
   -->
-
+  {% if 'user' not in session %}
   <div class="modal" data-modal>
 
     <div class="modal-close-overlay" data-modal-overlay></div>
@@ -77,7 +77,7 @@
     </div>
 
   </div>
-
+  {% endif %}
 
 
 
