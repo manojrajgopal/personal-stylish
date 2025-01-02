@@ -218,10 +218,10 @@
 
         <div class="header-user-actions">
 
-          <button class="action-btn" onclick="window.location.href='/login'">
+          <button class="action-btn" onclick="window.location.href='{{ url_for('profile') }}'">
             <ion-icon name="person-outline"></ion-icon>
-          </button>
-
+        </button>        
+        
           <button class="action-btn">
             <ion-icon name="heart-outline"></ion-icon>
             <span class="count">0</span>
@@ -739,7 +739,7 @@
               </li>
             </ul>
           </li>
-            <a href="/login"><p class="menu-title">Profile</p></a>
+            <a href="{{ url_for('profile') }}"><p class="menu-title">Profile</p></a>
           <li>
 
           </li>
