@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename ='css/quiz.css') }}">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <title>Fashion Profile Creation</title>
+    <style>
+        .user-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .user-info .info-field {
+            flex: 1 1 calc(50% - 20px);
+            text-align: center;
+        }
+
+        .user-info .info-field span {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .user-info .info-field {
+                flex: 1 1 100%;
+            }
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .buttons .backBtn,
+        .buttons button,
+        .buttons a {
+            padding: 10px 20px;
+            background-color: hsl(353, 100%, 78%);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .buttons .backBtn:hover,
+        .buttons button:hover,
+        .buttons a:hover {
+            background-color: hsl(0, 100%, 70%);
+        }
+
+        .input-field input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .input-field label {
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>Create Your Style Profile</header>
+        <div class="divider"></div>
+
+        <form action="{{ url_for('quiz') }}" method="POST">
+            <!-- First Page -->
+            <div id="first" class="form active">
+                <div id="user-info" class="user-info">
+                    <div class="info-field">
+                        <span>{{ name }}</span>
+                    </div>
+                    <div class="info-field">
+                        <span>@{{ username }}</span>
+                    </div>
+                    <div class="info-field">
+                        <span>+91 {{ phone }}</span>
+                    </div>
+                    <div class="info-field">
+                        <span>{{ email }}</span>
+                    </div>
+                </div>
+                <div class="divider"></div>
+
+                <div class="details personal">
+                    <span class="title">Personal Preferences</span>
+
+                    <div class="fields">
+                        <!-- Profile Picture -->
+                        <div class="input-field">
+                            <label>Profile Picture</label>
+                            <input type="file" accept="image/*" name="profile_pic" required>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Gender</label>
+                            <select required name="gender">
+                                <option disabled selected>Select gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Date of Birth</label>
+                            <input type="date" name="date_of_birth" required>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Body Type</label>
+                            <select name="body_type">
+                                <option disabled selected>Select body type</option>
+                                <option>Slim</option>
+                                <option>Athletic</option>
+                                <option>Average</option>
+                                <option>Curvy</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Height (cm)</label>
+                            <input name="height" type="number" placeholder="Enter your height" min="50" max="250">
+                        </div>
+
+                        <div class="input-field">
+                            <label>Weight (kg)</label>
+                            <input name="weight" type="number" placeholder="Enter your weight" min="20" max="200">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="nextBtn" onclick="nextForm('second')">
+                        <span class="btnText">Next</span>
+                        <i class="uil uil-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Second Page -->
+            <div id="second" class="form">
+                <div class="details preferences">
+                    <span class="title">Fashion Preferences</span>
+
+                    <div class="fields">
+                        <div class="input-field">
+                            <label>Preferred Colors</label>
+                            <select name="preferred_color">
+                                <option disabled selected>Select colors</option>
+                                <option>Blue</option>
+                                <option>Red</option>
+                                <option>Green</option>
+                                <option>Yellow</option>
+                                <option>Orange</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Preferred Fabrics</label>
+                            <select name="preferred_fabrics">
+                                <option disabled selected>Select fabrics</option>
+                                <option>Cotton</option>
+                                <option>Silk</option>
+                                <option>Denim</option>
+                                <option>Wool</option>
+                                <option>Polyester</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Preferred Styles</label>
+                            <select name="preferred_styles">
+                                <option disabled selected>Select styles</option>
+                                <option>Casual</option>
+                                <option>Formal</option>
+                                <option>Sporty</option>
+                                <option>Business</option>
+                                <option>Party</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Occasion Types</label>
+                            <select name="occasion_types">
+                                <option disabled selected>Select occasions</option>
+                                <option>Business</option>
+                                <option>Party</option>
+                                <option>Wedding</option>
+                                <option>Casual Outing</option>
+                                <option>Sports</option>
+                            </select>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Style Goals</label>
+                            <textarea name="style_goals" placeholder="Modern, classic, edgy, bohemian, minimalistic, etc." rows="2"></textarea>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Budget Preferences</label>
+                            <textarea name="budget" placeholder="Enter your preferred price range for clothing items." rows="2"></textarea>
+                        </div>
+
+                        <!-- Skin Color -->
+                        <div class="input-field">
+                            <label>Skin Color</label>
+                            <select required name="skin_color">
+                                <option disabled selected>Select skin color</option>
+                                <option>Fair</option>
+                                <option>Light</option>
+                                <option>Medium</option>
+                                <option>Dark</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Wardrobe Image -->
+                        <div class="input-field">
+                            <label>Wardrobe Image</label>
+                            <input name="wardrobe_img" type="file" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="backBtn" onclick="prevForm('first')">
+                        <i class="uil uil-arrow-left"></i>
+                        <span class="btnText">Back</span>
+                    </button>
+                    <button type="submit" class="submit">
+                        <span class="btnText">Submit</span>
+                        <i class="uil uil-check"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function nextForm(formId) {
+            document.querySelector('.form.active').classList.remove('active');
+            document.getElementById(formId).classList.add('active');
+        }
+
+        function prevForm(formId) {
+            document.querySelector('.form.active').classList.remove('active');
+            document.getElementById(formId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
