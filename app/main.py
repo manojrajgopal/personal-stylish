@@ -1,8 +1,25 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
+import os
+import google.generativeai as ai
+import logging
+import atexit
 from sqlalchemy import text
 from datetime import datetime
+
+os.environ["GRPC_VERBOSITY"] = "NONE"
+os.environ["GRPC_LOG_SEVERITY_LEVEL"] = "ERROR"
+logging.getLogger('google.generativeai').setLevel(logging.CRITICAL)
+logging.getLogger('grpc').setLevel(logging.CRITICAL)
+
+API_KEY="AIzaSyCZyjBDJiuLZwoS5MJIDusZY7Ma9aBpeEI"
+
+ai.configure(api_key=API_KEY)
+
+# Create a new model
+model = ai.GenerativeModel("gemini-pro")
+chat = model.start_chat()
 
 pymysql.install_as_MySQLdb()  # This will make PyMySQL work as MySQLdb
 
@@ -155,14 +172,25 @@ class Profile:
                 budget = user_info[13]
                 skin_color = user_info[14]
                 wardrobe_img = user_info[15]
-        
+                user_title = user_info[16]
+                user_about_1 = user_info[17]
+                user_about_2 = user_info[18]
+                
                 # Format date
+
                 date_obj = datetime.strptime(str(date_of_birth), "%Y-%m-%d")
                 f_date_of_birth = date_obj.strftime("%B %d, %Y")
 
+                if gender.lower() == 'male':
+                    profile_image = 'male-avatar.png'
+                elif gender.lower() == 'other':
+                    profile_image = 'other-avatar.png'
+                else:
+                    profile_image = 'female-avatar.png'
                 # Pass all data to the template
                 return render_template(
                     'profile.html', 
+                    profile_image=profile_image,
                     username=username, 
                     email=email, 
                     phone=phone, 
@@ -180,7 +208,10 @@ class Profile:
                     style_goals=style_goals,
                     budget=budget,
                     skin_color=skin_color,
-                    wardrobe_img=wardrobe_img
+                    wardrobe_img=wardrobe_img,
+                    one_word_user=user_title,
+                    paragraph_1=user_about_1,
+                    paragraph_2=user_about_2
                 )
             else:
                 # If no user info is found, redirect to login or show an error
@@ -208,6 +239,53 @@ class Profile:
             skin_color = request.form['skin_color']
             wardrobe_img = request.form['wardrobe_img']
 
+            user_details = session.get('user_details')
+
+            prompt = f"""
+                    Generate a professionally written, engaging, and personalized "About" section for a user profile in two short paragraphs (90-105 words in total). The content should impress the reader and reflect the user's unique style and preferences. Use the following details:
+                    - Name: {user_details['name']}
+                    - Gender: {gender}  
+                    - Age: {date_of_birth}  
+                    - Body Type: {body_type}  
+                    - Height: {height}  
+                    - Weight: {weight}  
+                    - Preferred Colors: {preferred_color}  
+                    - Preferred Fabrics: {preferred_fabrics}  
+                    - Preferred Styles: {preferred_styles}  
+                    - Occasion Types: {occasion_types}  
+                    - Style Goals: {style_goals}  
+                    - Skin Color: {skin_color}
+
+                    Ensure the language is elegant, concise, and makes the user sound fashion-forward and confident. Avoid repetition and use positive, inspiring vocabulary.
+                    """
+            
+            response = chat. send_message (prompt)
+            paragraph = response.text
+            paragraph = paragraph.split("\n\n")
+            user_about_1 = paragraph[0]
+            user_about_2 = paragraph[1]
+            
+            prompt = f"""
+                    Using the following details about a user, provide one word that best describes the overall style or impression of the individual. Focus solely on the most fitting adjective or noun that reflects the user's fashion preferences, style goals, and persona. Do not add any special characters like asterisks or quotation marks—just return the word itself.
+
+                    Details:
+                    - Name: {user_details['name']}
+                    - Gender: {gender}
+                    - Age: {date_of_birth}
+                    - Body Type: {body_type}
+                    - Height: {height}
+                    - Weight: {weight}
+                    - Preferred Colors: {preferred_color}
+                    - Preferred Fabrics: {preferred_fabrics}
+                    - Preferred Styles: {preferred_styles}
+                    - Occasion Types: {occasion_types}
+                    - Style Goals: {style_goals}
+                    - Skin Color: {skin_color}
+                    """
+
+            response = chat.send_message(prompt)
+            clean_output = response.text.strip().replace('*', '')  # Removing any asterisks
+            user_title = clean_output
             # Ensure budget is a valid number (float)
             try:
                 budget = float(budget)
@@ -231,8 +309,8 @@ class Profile:
                 self.db.session.commit()
 
                 # Insert into user_information table
-                insert_query_info = text('''INSERT INTO user_information (username, profile_pic, gender, date_of_birth, body_type, height, weight, preferred_color, preferred_fabrics, preferred_styles, occasion_types, style_goals, budget, skin_color, wardrobe_img)
-                                        VALUES (:username, :profile_pic, :gender, :date_of_birth, :body_type, :height, :weight, :preferred_color, :preferred_fabrics, :preferred_styles, :occasion_types, :style_goals, :budget, :skin_color, :wardrobe_img)''')
+                insert_query_info = text('''INSERT INTO user_information (username, profile_pic, gender, date_of_birth, body_type, height, weight, preferred_color, preferred_fabrics, preferred_styles, occasion_types, style_goals, budget, skin_color, wardrobe_img, user_title, user_about_1, user_about_2)
+                                        VALUES (:username, :profile_pic, :gender, :date_of_birth, :body_type, :height, :weight, :preferred_color, :preferred_fabrics, :preferred_styles, :occasion_types, :style_goals, :budget, :skin_color, :wardrobe_img, :user_title, :user_about_1, :user_about_2)''')
                 self.db.session.execute(insert_query_info, {
                     'username': user_details['username'],
                     'profile_pic': profile_pic,
@@ -248,7 +326,10 @@ class Profile:
                     'style_goals': style_goals,
                     'budget': budget,  # Ensure this is a valid number
                     'skin_color': skin_color,
-                    'wardrobe_img': wardrobe_img
+                    'wardrobe_img': wardrobe_img,
+                    'user_title': user_title,
+                    'user_about_1': user_about_1,
+                    'user_about_2': user_about_2
                 })
                 self.db.session.commit()
 
