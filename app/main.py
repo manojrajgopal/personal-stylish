@@ -7,13 +7,24 @@ import logging
 import atexit
 from sqlalchemy import text
 from datetime import datetime
+from werkzeug.utils import secure_filename
+
+# Directory to save the images
+PROFILE_PIC_FOLDER = 'app/static/uploads/profile/'
+WARDROBE_IMG_FOLDER = 'app/static/uploads/wardrobe/'
+
+os.makedirs(PROFILE_PIC_FOLDER, exist_ok=True)
+os.makedirs(WARDROBE_IMG_FOLDER, exist_ok=True)
 
 os.environ["GRPC_VERBOSITY"] = "NONE"
 os.environ["GRPC_LOG_SEVERITY_LEVEL"] = "ERROR"
 logging.getLogger('google.generativeai').setLevel(logging.CRITICAL)
 logging.getLogger('grpc').setLevel(logging.CRITICAL)
 
-API_KEY="AIzaSyCZyjBDJiuLZwoS5MJIDusZY7Ma9aBpeEI"
+API_KEY = os.getenv("GOOGLE_API_KEY")
+
+if API_KEY is None:
+    raise ValueError("API_KEY environment variable is not set!")
 
 ai.configure(api_key=API_KEY)
 
@@ -224,7 +235,7 @@ class Profile:
     def quiz(self):
         if request.method == 'POST':
             # Get quiz data from the form
-            profile_pic = request.form['profile_pic']
+            profile_pic = request.files['profile_pic']
             gender = request.form['gender']
             date_of_birth = request.form['date_of_birth']
             body_type = request.form['body_type']
@@ -237,9 +248,26 @@ class Profile:
             style_goals = request.form['style_goals']
             budget = request.form['budget']
             skin_color = request.form['skin_color']
-            wardrobe_img = request.form['wardrobe_img']
+            wardrobe_img = request.files['wardrobe_img']
 
             user_details = session.get('user_details')
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+            profile_pic_filename = f"{user_details['username']}_{timestamp}_{secure_filename(profile_pic.filename)}"
+            wardrobe_img_filename = f"{user_details['username']}_{timestamp}_{secure_filename(wardrobe_img.filename)}"
+
+            profile_pic_path = os.path.join(PROFILE_PIC_FOLDER, profile_pic_filename)
+            wardrobe_img_path = os.path.join(WARDROBE_IMG_FOLDER, wardrobe_img_filename)
+
+            profile_pic.save(profile_pic_path)
+            wardrobe_img.save(wardrobe_img_path)
+
+            print(f"Saving profile picture as {profile_pic_filename}")
+            print(f"Saving wardrobe image as {wardrobe_img_filename}")
+            print(f"Profile pic path: {profile_pic_path}")
+            print(f"Wardrobe image path: {wardrobe_img_path}")
+            print(f"Profile picture saved to {profile_pic_path}")
+            print(f"Wardrobe image saved to {wardrobe_img_path}")
 
             prompt = f"""
                     Generate a professionally written, engaging, and personalized "About" section for a user profile in two short paragraphs (90-105 words in total). The content should impress the reader and reflect the user's unique style and preferences. Use the following details:
@@ -313,7 +341,7 @@ class Profile:
                                         VALUES (:username, :profile_pic, :gender, :date_of_birth, :body_type, :height, :weight, :preferred_color, :preferred_fabrics, :preferred_styles, :occasion_types, :style_goals, :budget, :skin_color, :wardrobe_img, :user_title, :user_about_1, :user_about_2)''')
                 self.db.session.execute(insert_query_info, {
                     'username': user_details['username'],
-                    'profile_pic': profile_pic,
+                    'profile_pic': profile_pic_filename,
                     'gender': gender,
                     'date_of_birth': date_of_birth,
                     'body_type': body_type,
@@ -326,7 +354,7 @@ class Profile:
                     'style_goals': style_goals,
                     'budget': budget,  # Ensure this is a valid number
                     'skin_color': skin_color,
-                    'wardrobe_img': wardrobe_img,
+                    'wardrobe_img': wardrobe_img_filename,
                     'user_title': user_title,
                     'user_about_1': user_about_1,
                     'user_about_2': user_about_2
@@ -346,6 +374,7 @@ class Profile:
         # If the request is GET, render the quiz page
         return render_template('quiz.html', title='Fashion Quiz')
 
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Set limit to 16MB
 
 # Initialize the classes
 Dashboard(app)

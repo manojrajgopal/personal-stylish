@@ -85,7 +85,7 @@
         <header>Create Your Style Profile</header>
         <div class="divider"></div>
 
-        <form action="{{ url_for('quiz') }}" method="POST">
+        <form action="{{ url_for('quiz') }}" method="POST" enctype="multipart/form-data">
             <!-- First Page -->
             <div id="first" class="form active">
                 <div id="user-info" class="user-info">
