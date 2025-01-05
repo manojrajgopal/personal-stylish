@@ -8,6 +8,7 @@ import atexit
 from sqlalchemy import text
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from app.finder import FashionFinder
 
 # Directory to save the images
 PROFILE_PIC_FOLDER = 'app/static/uploads/profile/'
@@ -75,7 +76,7 @@ class Login:
     def login(self):
         if request.method == 'POST':
             # Get username and password from the login form
-            username = request.form['username']
+            username = request.form['username'].lower()
             password = request.form['password']
 
             # Safely execute the query to check login credentials
@@ -108,10 +109,10 @@ class Login:
     def signup(self):
      if request.method == 'POST':
          # Get user details from the signup form
-         name = request.form['name']
-         username = request.form['username']
+         name = request.form['name'].title()
+         username = request.form['username'].lower().strip().replace(" ", "")
          phone = request.form['phone']
-         email = request.form['email']
+         email = request.form['email'].lower()
          password = request.form['password']
 
          # Check if the username already exists in the login table
@@ -198,6 +199,17 @@ class Profile:
                     profile_image = 'other-avatar.png'
                 else:
                     profile_image = 'female-avatar.png'
+
+                filters = [gender, '25', body_type, preferred_color, preferred_fabrics, preferred_styles, occasion_types, style_goals, skin_color]
+                
+                finder = FashionFinder()
+
+                formal_results = finder.search_google_api("winter fashion", filters)
+                formal_results_2 = finder.search_google_api("winter fashion", filters)
+
+                casual_results = finder.search_google_api("casual fashion", filters)
+                casual_results_2 = finder.search_google_api("casual fashion", filters)
+
                 # Pass all data to the template
                 return render_template(
                     'profile.html', 
@@ -222,7 +234,9 @@ class Profile:
                     wardrobe_img=wardrobe_img,
                     one_word_user=user_title,
                     paragraph_1=user_about_1,
-                    paragraph_2=user_about_2
+                    paragraph_2=user_about_2,
+                    formal_results=formal_results + formal_results_2,
+                    casual_results=casual_results + casual_results_2
                 )
             else:
                 # If no user info is found, redirect to login or show an error
