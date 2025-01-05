@@ -1031,7 +1031,7 @@ main {
 
 
 /*-----------------------------------*\
-  #BLOG
+  #TROVE
 \*-----------------------------------*/
 
 .blog-posts { margin-bottom: 10px; }
@@ -1244,7 +1244,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
-   * #PORTFOLIO, BLOG 
+   * #PORTFOLIO, TROVE 
    */
 
   .project-img,
@@ -1504,7 +1504,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
-   * #PORTFOLIO, BLOG
+   * #PORTFOLIO, TROVE
    */
 
   .project-img, .blog-banner-box { border-radius: 16px; }
@@ -1623,7 +1623,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .filter-item button.active { color: var(--neutral-dark); }
 
-  /* portfolio and blog grid */
+  /* portfolio and trove grid */
 
   .project-list, .blog-posts-list { grid-template-columns: 1fr 1fr; }
 
@@ -1755,7 +1755,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 
   /**
-   * BLOG
+   * TROVE
    */
 
   .blog-banner-box { height: 230px; }
