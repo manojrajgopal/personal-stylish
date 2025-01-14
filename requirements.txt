@@ -1,7 +1,11 @@
 Flask==3.0.3
 requests==2.32.2
+flask_sqlalchemy==3.1.1
+pymysql==1.1.1
+google==3.0.0
+google-generativeai==0.8.3
 
-
+"""
 ai_stylist_project/
 ├── app/                        # Flask application package
 │   ├── __init__.py             # Flask application factory
@@ -43,3 +47,4 @@ ai_stylist_project/
 ├── requirements.txt            # Python dependencies
 ├── run.py                      # Entry point for running the Flask app
 └── README.md                   # General project documentation
+"""
