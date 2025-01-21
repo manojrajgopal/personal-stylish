@@ -1,14 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+from datetime import datetime
+from werkzeug.utils import secure_filename
+from app.finder import FashionFinder
+from app.database import DatabaseInitializer
 import pymysql
 import os
 import google.generativeai as ai
 import logging
 import atexit
-from sqlalchemy import text
-from datetime import datetime
-from werkzeug.utils import secure_filename
-from app.finder import FashionFinder
 import time
 
 # Directory to save the images
@@ -40,6 +41,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'manoj_rajgopal_1509'
 
 # Configuring the database connection
+db_initializer = DatabaseInitializer()
+db_initializer.initialize_database()
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/fashion'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
