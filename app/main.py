@@ -9,6 +9,7 @@ from sqlalchemy import text
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from app.finder import FashionFinder
+import time
 
 # Directory to save the images
 PROFILE_PIC_FOLDER = 'app/static/uploads/profile/'
@@ -205,9 +206,11 @@ class Profile:
                 finder = FashionFinder()
 
                 formal_results = finder.search_google_api("winter fashion", filters)
+                time.sleep(1)
                 formal_results_2 = finder.search_google_api("winter fashion", filters)
-
+                time.sleep(1)
                 casual_results = finder.search_google_api("casual fashion", filters)
+                time.sleep(1)
                 casual_results_2 = finder.search_google_api("casual fashion", filters)
 
                 # Pass all data to the template
