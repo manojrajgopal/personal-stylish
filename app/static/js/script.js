@@ -57,6 +57,31 @@ if (mobileMenuOpenBtn && mobileMenu && mobileMenuCloseBtn && overlay) {
   }
 }
 
+const mobileMenuOpenBtnAi = document.querySelectorAll('[data-mobile-menu-open-btn-Ai]');
+const mobileMenuAi = document.querySelectorAll('[data-mobile-menu-Ai]');
+const mobileMenuCloseBtnAi = document.querySelectorAll('[data-mobile-menu-close-btn-Ai]');
+const overlayAi = document.querySelector('[data-overlay]');
+
+// Handle multiple mobile menus
+if (mobileMenuOpenBtnAi && mobileMenuAi && mobileMenuCloseBtnAi && overlayAi) {
+  for (let i = 0; i < mobileMenuOpenBtnAi.length; i++) {
+    // Function to close mobile menu and overlay
+    const mobileMenuCloseFunc = function () {
+      mobileMenuAi[i].classList.remove('active'); // Remove 'active' class from menu
+      overlayAi.classList.remove('active'); // Remove 'active' class from overlay
+    };
+
+    // Open mobile menu and activate overlay
+    mobileMenuOpenBtnAi[i].addEventListener('click', function () {
+      mobileMenuAi[i].classList.add('active'); // Add 'active' class to menu
+      overlayAi.classList.add('active'); // Add 'active' class to overlay
+    });
+
+    // Close mobile menu and deactivate overlay
+    mobileMenuCloseBtnAi[i].addEventListener('click', mobileMenuCloseFunc);
+    overlayAi.addEventListener('click', mobileMenuCloseFunc);
+  }
+}
 // Accordion functionality
 // Variables for accordion elements
 const accordionBtn = document.querySelectorAll('[data-accordion-btn]');

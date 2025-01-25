@@ -252,7 +252,6 @@ class Profile:
             # If user is not logged in, redirect to login
             return redirect(url_for('login'))
 
-
     def quiz(self):
         if request.method == 'POST':
             # Get quiz data from the form
@@ -282,13 +281,6 @@ class Profile:
 
             profile_pic.save(profile_pic_path)
             wardrobe_img.save(wardrobe_img_path)
-
-            print(f"Saving profile picture as {profile_pic_filename}")
-            print(f"Saving wardrobe image as {wardrobe_img_filename}")
-            print(f"Profile pic path: {profile_pic_path}")
-            print(f"Wardrobe image path: {wardrobe_img_path}")
-            print(f"Profile picture saved to {profile_pic_path}")
-            print(f"Wardrobe image saved to {wardrobe_img_path}")
 
             prompt = f"""
                     Generate a professionally written, engaging, and personalized "About" section for a user profile in two short paragraphs (90-105 words in total). The content should impress the reader and reflect the user's unique style and preferences. Use the following details:
@@ -343,8 +335,7 @@ class Profile:
 
             # Get user details from session
             user_details = session.get('user_details')
-            print(session)
-            print(user_details)
+
             if user_details:
                 # Insert into login table
                 insert_query_login = text('INSERT INTO login (name, username, phone, email, password) VALUES (:name, :username, :phone, :email, :password)')

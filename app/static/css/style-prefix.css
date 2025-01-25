@@ -595,6 +595,80 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   z-index: 5;
 }
 
+.mobile-navigation-menu-ai-input{
+  background: var(--white);
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 5px 0;
+  -webkit-box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.25);
+          box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.25);
+  z-index: 5;
+}
+/* Input field styling */
+.mobile-navigation-menu-ai-input input {
+  width: 90%;
+  margin-left: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 7px;
+  background-color: hsl(0, 0%, 90%); /* Input background color */
+  outline: none;
+  color: #333;
+  text-align: center; /* Center the placeholder */
+  transition: background-color 0.3s ease;
+}
+
+/* When the input is focused (clicked), background color remains the same */
+.mobile-navigation-menu-ai-input input:focus {
+  background-color: hsl(0, 0%, 90%); /* Same background */
+}
+
+/* Placeholder styling */
+.mobile-navigation-menu-ai-input input::placeholder {
+  color: #aaa; /* Light color for placeholder */
+  text-align: center; /* Center placeholder text */
+}
+
+/* Add left padding after text is entered */
+.mobile-navigation-menu-ai-input input:valid {
+  padding-left: 30px; /* Space from left after typing */
+}
+
+/* Button styling */
+.mobile-navigation-menu-ai-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin-left: 10px;
+}
+
+/* Icon styling */
+.mobile-navigation-menu-ai-button ion-icon {
+  font-size: 24px;
+  color: hsl(353, 100%, 78%); /* Icon color */
+}
+
 .mobile-bottom-navigation .action-btn {
   position: relative;
   font-size: 26px;
@@ -642,6 +716,27 @@ body::-webkit-scrollbar-thumb:hover { background: hsl(0, 0%, 70%); }
   visibility: visible;
 }
 
+.mobile-navigation-menu-ai {
+  background: var(--white);
+  position: fixed;
+  left: 0;
+  bottom: -100%; /* Start the menu completely off-screen from the bottom */
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.1);
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  visibility: hidden;
+  transition: bottom 0.5s ease, visibility 0.5s ease; /* Animate the bottom position */
+  z-index: 20;
+}
+
+.mobile-navigation-menu-ai.active {
+  bottom: 0; /* Move the menu into view */
+  visibility: visible;
+}
 .menu-top {
   padding-bottom: 15px;
   margin-bottom: 10px;
@@ -2203,7 +2298,12 @@ footer {
     -webkit-border-top-right-radius: var(--border-radius-md);
             border-top-right-radius: var(--border-radius-md);
   }
-
+  .mobile-navigation-menu-ai-input {
+    -webkit-border-top-left-radius: var(--border-radius-md);
+            border-top-left-radius: var(--border-radius-md);
+    -webkit-border-top-right-radius: var(--border-radius-md);
+            border-top-right-radius: var(--border-radius-md);
+  }
 
 
   /**
@@ -2869,7 +2969,7 @@ footer {
   .dropdown-list .dropdown-item a:hover { color: var(--salmon-pink); }
 
   .mobile-bottom-navigation { display: none; }
-
+  .mobile-navigation-menu-ai-input { display: none; }
 
 
   /**

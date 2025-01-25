@@ -32,16 +32,5 @@ class FashionFinder:
                         'image': item.get('link', 'Image link not found')
                     })
             except requests.exceptions.RequestException as e:
-                print("Error fetching data from Google API:", e)
                 break
         return items
-
-    def display_results(self, items):
-        if not items:
-            print("No results found.")
-            return
-        for item in items:
-            print(f"Title: {item['title']}")
-            print(f"Description: {item['description']}")
-            print(f"Image: {item['image']}")
-            print("-" * 80)
