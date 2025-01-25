@@ -25,7 +25,6 @@ class DatabaseInitializer:
 
         if not database_exists:
             self.cursor.execute(f"CREATE DATABASE {self.database}")
-            print(f"Database '{self.database}' created.")
 
     def use_database(self):
         """Select the 'fashion' database for use."""
@@ -48,7 +47,6 @@ class DatabaseInitializer:
                     password VARCHAR(255) NOT NULL
                 )
             """)
-            print("Table 'login' created.")
 
     def create_user_information_table(self):
         """Create the 'user_information' table if it doesn't exist."""
@@ -79,7 +77,6 @@ class DatabaseInitializer:
                     user_about_2 TEXT
                 )
             """)
-            print("Table 'user_information' created.")
 
     def close_connection(self):
         """Close the cursor and connection."""
