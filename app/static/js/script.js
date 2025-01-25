@@ -82,6 +82,32 @@ if (mobileMenuOpenBtnAi && mobileMenuAi && mobileMenuCloseBtnAi && overlayAi) {
     overlayAi.addEventListener('click', mobileMenuCloseFunc);
   }
 }
+
+const laptopMenuOpenBtnAi = document.querySelectorAll('[data-laptop-menu-open-btn-Ai]');
+const laptopMenuAi = document.querySelectorAll('[data-mobile-menu-Ai]');
+const laptopMenuCloseBtnAi = document.querySelectorAll('[data-mobile-menu-close-btn-Ai]');
+const laptopOverlayAi = document.querySelector('[data-overlay]');
+
+// Handle multiple mobile menus
+if (laptopMenuOpenBtnAi && laptopMenuAi && laptopMenuCloseBtnAi && laptopOverlayAi) {
+  for (let i = 0; i < laptopMenuOpenBtnAi.length; i++) {
+    // Function to close mobile menu and overlay
+    const mobileMenuCloseFunc = function () {
+      laptopMenuAi[i].classList.remove('active'); // Remove 'active' class from menu
+      laptopOverlayAi.classList.remove('active'); // Remove 'active' class from overlay
+    };
+
+    // Open mobile menu and activate overlay
+    laptopMenuOpenBtnAi[i].addEventListener('click', function () {
+      laptopMenuAi[i].classList.add('active'); // Add 'active' class to menu
+      laptopOverlayAi.classList.add('active'); // Add 'active' class to overlay
+    });
+
+    // Close mobile menu and deactivate overlay
+    laptopMenuCloseBtnAi[i].addEventListener('click', mobileMenuCloseFunc);
+    laptopOverlayAi.addEventListener('click', mobileMenuCloseFunc);
+  }
+}
 // Accordion functionality
 // Variables for accordion elements
 const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
