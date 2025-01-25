@@ -55,3 +55,6 @@ ai_stylist_project/
 ├── requirements.txt            # Python dependencies
 ├── run.py                      # Entry point for running the Flask app
 └── README.md                   # General project documentation
+
+
+Nischay
