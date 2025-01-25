@@ -2304,7 +2304,16 @@ footer {
     -webkit-border-top-right-radius: var(--border-radius-md);
             border-top-right-radius: var(--border-radius-md);
   }
-
+.mobile-navigation-menu-ai-button-hide{
+  display: none;
+}
+.mobile-navigation-menu-ai-button-hide{
+  display: none;
+}
+.mobile-navigation-menu-ai-input-hide{
+  display: none;
+}
+.blog-banner-box { height: auto; }
 
   /**
    * #BANNER
@@ -2482,8 +2491,8 @@ footer {
 
   .cta-container { aspect-ratio: 6 / 5; }
 
-
-
+  .blog-posts-list { gap: 30px; }
+  .blog-content { padding: 25px; }
   /**
    * #BLOG
    */
@@ -2970,6 +2979,42 @@ footer {
 
   .mobile-bottom-navigation { display: none; }
   .mobile-navigation-menu-ai-input { display: none; }
+  .mobile-navigation-menu-ai-button-hide{
+    display: block;
+  }
+  .mobile-navigation-menu-ai-button-hide{
+    display: block;
+  }
+  .mobile-navigation-menu-ai-input-hide{
+    display: block;
+    width: 54%;
+    margin-left: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 7px;
+    background-color: hsl(0, 0%, 90%); /* Input background color */
+    outline: none;
+    color: #333;
+    text-align: center; /* Center the placeholder */
+    transition: background-color 0.3s ease;
+  }
+  
+  /* When the input is focused (clicked), background color remains the same */
+  .mobile-navigation-menu-ai-input-hide:focus {
+    background-color: hsl(0, 0%, 90%); /* Same background */
+  }
+  
+  /* Placeholder styling */
+  .mobile-navigation-menu-ai-input-hide::placeholder {
+    color: #aaa; /* Light color for placeholder */
+    text-align: center; /* Center placeholder text */
+  }
+  
+  /* Add left padding after text is entered */
+  .mobile-navigation-menu-ai-input-hide:valid {
+    padding-left: 30px; /* Space from left after typing */
+  }
 
 
   /**
