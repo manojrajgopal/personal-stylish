@@ -49,7 +49,7 @@ class DatabaseInitializer:
             """)
 
     def create_user_information_table(self):
-        """Create the 'user_information' table if it doesn't exist."""
+        """Create the 'user_information' table if it doesn't exist with ON DELETE CASCADE."""
         self.cursor.execute("SHOW TABLES LIKE 'user_information'")
         user_info_table_exists = self.cursor.fetchone()
 
@@ -74,9 +74,13 @@ class DatabaseInitializer:
                     wardrobe_img VARCHAR(255),
                     user_title VARCHAR(50),
                     user_about_1 TEXT,
-                    user_about_2 TEXT
+                    user_about_2 TEXT,
+                    CONSTRAINT fk_user_info_username 
+                        FOREIGN KEY (username) REFERENCES login(username) 
+                        ON DELETE CASCADE
                 )
             """)
+
 
     def close_connection(self):
         """Close the cursor and connection."""

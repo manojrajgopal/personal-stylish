@@ -111,12 +111,12 @@
                         <!-- Profile Picture -->
                         <div class="input-field">
                             <label>Profile Picture</label>
-                            <input type="file" accept="image/*" name="profile_pic" required>
+                            <input type="file" accept="image/*" name="profile_pic">
                         </div>
 
                         <div class="input-field">
                             <label>Gender</label>
-                            <select required name="gender">
+                            <select name="gender">
                                 <option disabled selected>Select gender</option>
                                 <option>Male</option>
                                 <option>Female</option>
@@ -126,7 +126,7 @@
 
                         <div class="input-field">
                             <label>Date of Birth</label>
-                            <input type="date" name="date_of_birth" required>
+                            <input type="date" name="date_of_birth">
                         </div>
 
                         <div class="input-field">
@@ -167,74 +167,241 @@
                     <span class="title">Fashion Preferences</span>
 
                     <div class="fields">
+                        <!-- Preferred Colors -->
                         <div class="input-field">
                             <label>Preferred Colors</label>
-                            <select name="preferred_color">
-                                <option disabled selected>Select colors</option>
-                                <option>Blue</option>
-                                <option>Red</option>
-                                <option>Green</option>
-                                <option>Yellow</option>
-                                <option>Orange</option>
-                            </select>
+                            <div class="tag-container">
+                                <input
+                                    type="text"
+                                    placeholder="Enter your preferred colors"
+                                    list="color-options"
+                                    class="autocomplete"
+                                />
+                            </div>
+                            <input type="hidden" name="preferred_color" id="preferred_color_values" />
+                            <datalist id="color-options">
+                                <option value="Blue"></option>
+                                <option value="Red"></option>
+                                <option value="Green"></option>
+                                <option value="Yellow"></option>
+                                <option value="Orange"></option>
+                                <option value="Navy Blue"></option>
+                                <option value="Black"></option>
+                                <option value="Charcoal"></option>
+                                <option value="Burgundy"></option>
+                                <option value="Maroon"></option>
+                                <option value="Olive"></option>
+                                <option value="Rust"></option>
+                                <option value="Gold"></option>
+                                <option value="Cream"></option>
+                                <option value="Peach"></option>
+                                <option value="Brown"></option>
+                                <option value="Khaki"></option>
+                                <option value="Mustard"></option>
+                                <option value="Teal"></option>
+                                <option value="Tan"></option>
+                                <option value="Beige"></option>
+                                <option value="Bronze"></option>
+                                <option value="Lime Green"></option>
+                                <option value="Off White"></option>
+                                <option value="Sea Green"></option>
+                                <option value="Lavender"></option>
+                                <option value="Mauve"></option>
+                                <option value="Cyan"></option>
+                                <option value="Magenta"></option>
+                                <option value="Pink"></option>
+                                <option value="Turquoise"></option>
+                                <option value="Lavender Blush"></option>
+                                <option value="Indigo"></option>
+                            </datalist>
                         </div>
 
+                        <!-- Preferred Fabrics -->
                         <div class="input-field">
                             <label>Preferred Fabrics</label>
-                            <select name="preferred_fabrics">
-                                <option disabled selected>Select fabrics</option>
-                                <option>Cotton</option>
-                                <option>Silk</option>
-                                <option>Denim</option>
-                                <option>Wool</option>
-                                <option>Polyester</option>
-                            </select>
+                            <div class="tag-container">
+                                <input
+                                    type="text"
+                                    placeholder="Enter preferred fabrics"
+                                    list="fabric-options"
+                                    class="autocomplete"
+                                />
+                            </div>
+                            <!-- Hidden input to store the selected fabrics -->
+                            <input type="hidden" name="preferred_fabrics" id="preferred_fabrics" />
+
+                            <datalist id="fabric-options">
+                                <option value="Cotton"></option>
+                                <option value="Silk"></option>
+                                <option value="Denim"></option>
+                                <option value="Wool"></option>
+                                <option value="Polyester"></option>
+                                <option value="Linen"></option>
+                                <option value="Velvet"></option>
+                                <option value="Leather"></option>
+                                <option value="Cashmere"></option>
+                                <option value="Nylon"></option>
+                                <option value="Jersey"></option>
+                                <option value="Tweed"></option>
+                                <option value="Corduroy"></option>
+                                <option value="Chiffon"></option>
+                                <option value="Spandex"></option>
+                                <option value="Brocade"></option>
+                                <option value="Rayon"></option>
+                                <option value="Taffeta"></option>
+                                <option value="Fleece"></option>
+                                <option value="Satin"></option>
+                                <option value="Hemp"></option>
+                                <option value="Tulle"></option>
+                            </datalist>
                         </div>
 
+                            <!-- Preferred Styles -->
                         <div class="input-field">
                             <label>Preferred Styles</label>
-                            <select name="preferred_styles">
-                                <option disabled selected>Select styles</option>
-                                <option>Casual</option>
-                                <option>Formal</option>
-                                <option>Sporty</option>
-                                <option>Business</option>
-                                <option>Party</option>
-                            </select>
+                            <div class="tag-container">
+                                <input
+                                    type="text"
+                                    placeholder="Enter your preferred styles"
+                                    list="style-options"
+                                    class="autocomplete"
+                                />
+                            </div>
+                            <!-- Hidden input to store the selected fabrics -->
+                            <input type="hidden" name="preferred_styles" id="preferred_styles" />
+                            <!-- Datalist with available style options -->
+                            <datalist id="style-options">
+                                <option value="Casual"></option>
+                                <option value="Formal"></option>
+                                <option value="Sporty"></option>
+                                <option value="Business"></option>
+                                <option value="Party"></option>
+                                <option value="Bohemian"></option>
+                                <option value="Vintage"></option>
+                                <option value="Minimalist"></option>
+                                <option value="Streetwear"></option>
+                                <option value="Chic"></option>
+                                <option value="Preppy"></option>
+                                <option value="Punk"></option>
+                                <option value="Rock"></option>
+                                <option value="Gothic"></option>
+                                <option value="Retro"></option>
+                                <option value="Eclectic"></option>
+                                <option value="Athleisure"></option>
+                                <option value="Grunge"></option>
+                                <option value="Luxury"></option>
+                                <option value="Cozy"></option>
+                                <option value="Indie"></option>
+                                <option value="Safari"></option>
+                            </datalist>
                         </div>
 
-                        <div class="input-field">
-                            <label>Occasion Types</label>
-                            <select name="occasion_types">
-                                <option disabled selected>Select occasions</option>
-                                <option>Business</option>
-                                <option>Party</option>
-                                <option>Wedding</option>
-                                <option>Casual Outing</option>
-                                <option>Sports</option>
-                            </select>
-                        </div>
+    <!-- Occasion Types -->
+    <div class="input-field">
+        <label>Occasion Types</label>
+        <div class="tag-container">
+            <input
+                type="text"
+                placeholder="Enter occasion types"
+                list="occasion-options"
+                class="autocomplete"
+            />
+        </div>
+        <input type="hidden" name="occasion_types" id="occasion_types" />
+        <datalist id="occasion-options">
+            <option value="Business"></option>
+            <option value="Party"></option>
+            <option value="Wedding"></option>
+            <option value="Casual Outing"></option>
+            <option value="Sports"></option>
+            <option value="Vacation"></option>
+            <option value="Formal Event"></option>
+            <option value="Birthday"></option>
+            <option value="Holiday"></option>
+            <option value="Bridal Shower"></option>
+            <option value="Graduation"></option>
+            <option value="Date Night"></option>
+            <option value="Dinner Party"></option>
+            <option value="Baby Shower"></option>
+            <option value="Anniversary"></option>
+            <option value="Concert"></option>
+            <option value="Festival"></option>
+            <option value="Corporate Event"></option>
+            <option value="Family Gathering"></option>
+            <option value="Outdoor Adventure"></option>
+            <option value="Religious Ceremony"></option>
+        </datalist>
+    </div>
 
-                        <div class="input-field">
-                            <label>Style Goals</label>
-                            <textarea name="style_goals" placeholder="Modern, classic, edgy, bohemian, minimalistic, etc." rows="2"></textarea>
-                        </div>
+    <!-- Style Goals -->
+    <div class="input-field">
+        <label>Style Goals</label>
+        <div class="tag-container">
+            <input
+                type="text"
+                id="style-goals-input"
+                placeholder="Enter your style goals"
+                list="style-goals-options"
+                autocomplete="off"
+            />
+        </div>
+        <input type="hidden" name="style_goals" id="style_goals" />
+        <datalist id="style-goals-options">
+            <option value="Modern"></option>
+            <option value="Classic"></option>
+            <option value="Edgy"></option>
+            <option value="Bohemian"></option>
+            <option value="Minimalistic"></option>
+            <option value="Eclectic"></option>
+            <option value="Elegant"></option>
+            <option value="Trendy"></option>
+            <option value="Vintage"></option>
+            <option value="Chic"></option>
+            <option value="Sporty"></option>
+            <option value="Sophisticated"></option>
+            <option value="Romantic"></option>
+            <option value="Luxury"></option>
+            <option value="Bold"></option>
+            <option value="Timeless"></option>
+            <option value="Casual"></option>
+            <option value="Professional"></option>
+            <option value="Glamorous"></option>
+            <option value="Relaxed"></option>
+        </datalist>
+    </div>
+                        
 
                         <div class="input-field">
                             <label>Budget Preferences</label>
-                            <input type="number" name="budget" placeholder="preferred price range">
+                            <input 
+                                type="number" 
+                                name="budget" 
+                                placeholder="Preferred price range"
+                                min="0" 
+                                max="1000000" 
+                                step="1"
+                                class="budget-input" 
+                            />
+                            <small>Enter your preferred budget in USD</small>
                         </div>
+                        
 
                         <!-- Skin Color -->
                         <div class="input-field">
                             <label>Skin Color</label>
-                            <select required name="skin_color">
+                            <select name="skin_color">
                                 <option disabled selected>Select skin color</option>
-                                <option>Fair</option>
-                                <option>Light</option>
-                                <option>Medium</option>
-                                <option>Dark</option>
-                                <option>Other</option>
+                                <option>Deepest Skin</option>
+                                <option>Very Deep</option>
+                                <option>Deep Brown</option>
+                                <option>Medium Brown</option>
+                                <option>Tan</option>
+                                <option>Light Tan</option>
+                                <option>Medium Fair</option>
+                                <option>Light Fair</option>
+                                <option>Warm Fair</option>
+                                <option>Very Fair</option>
+                                <option>Pale</option>
                             </select>
                         </div>
 
@@ -273,3 +440,124 @@
     </script>
 </body>
 </html>
+
+<style>
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        border: 1px solid #aaa;
+        padding: 3px;
+        min-height: 30px;
+        align-items: center;
+        border-radius: 5px;
+    }
+
+    .tag {
+        background: hsl(353, 100%, 78%);
+        color: white;
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+    }
+
+    .tag span {
+        margin-left: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .tag-container input {
+        border: none;
+        outline: none;
+        flex: 1;
+        padding: 3px;
+        min-width: 50px;
+        height: 20px;
+        font-size: 12px;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll('input[type="text"]');
+    
+    inputs.forEach(input => {
+        const tagContainer = input.closest(".input-field").querySelector(".tag-container");
+        const datalist = input.closest(".input-field").querySelector("datalist");
+        const selectedValues = new Set();
+        const hiddenInput = input.closest(".input-field").querySelector("input[type='hidden']");
+
+        input.addEventListener("input", function (event) {
+            let value = event.target.value.trim();
+
+            if (value.includes(",")) {
+                let values = value.split(",").map(item => item.trim()).filter(item => item !== "");
+
+                values.forEach(item => {
+                    if (!selectedValues.has(item)) {
+                        selectedValues.add(item);
+                        addTag(item);
+                    }
+                });
+
+                input.value = ""; // Clear input after adding
+            }
+        });
+
+        input.addEventListener("change", function () {
+            let value = input.value.trim();
+
+            if (value && !selectedValues.has(value)) {
+                selectedValues.add(value);
+                addTag(value);
+            }
+
+            input.value = ""; // Clear input after adding
+        });
+
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === ",") {
+                event.preventDefault();
+                let value = input.value.trim();
+
+                if (value && !selectedValues.has(value)) {
+                    selectedValues.add(value);
+                    addTag(value);
+                }
+
+                input.value = ""; // Clear input after adding
+            }
+        });
+
+        function addTag(text) {
+            const tag = document.createElement("div");
+            tag.classList.add("tag");
+            tag.textContent = text;
+
+            const removeBtn = document.createElement("span");
+            removeBtn.textContent = " ×";
+            removeBtn.addEventListener("click", () => {
+                selectedValues.delete(text);
+                tag.remove();
+                updateHiddenInput(); // Update hidden input after removal
+            });
+
+            tag.appendChild(removeBtn);
+            tagContainer.insertBefore(tag, input);
+            updateHiddenInput(); // Update hidden input after adding
+        }
+
+        function updateHiddenInput() {
+            hiddenInput.value = Array.from(selectedValues).join(", ");
+        }
+
+        // Make sure hidden input value is updated on page load
+        updateHiddenInput();
+    });
+});
+
+</script>

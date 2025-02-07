@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from datetime import datetime
+from datetime import datetime, date
 from werkzeug.utils import secure_filename
 from app.finder import FashionFinder
 from app.database import DatabaseInitializer
+from ai_engine.fashion_recommender import recommend_fashion
+from ai_engine.age_gender_skinTone import process_fashion_recommendation
+#from celery_setup import celery
 import pymysql
 import os
 import google.generativeai as ai
@@ -192,30 +195,61 @@ class Profile:
                 user_title = user_info[16]
                 user_about_1 = user_info[17]
                 user_about_2 = user_info[18]
+
+                current_date = datetime.now().date()
+
+                if date_of_birth:
+                    age = current_date.year - date_of_birth.year - ((current_date.month, current_date.day) < (date_of_birth.month, date_of_birth.day))
+                    # Categorize based on age
+                    if age < 18:
+                        if gender.lower() == "male":
+                            gender = "Boys"
+                        elif gender.lower() == "female":
+                            gender = "Girls"
+                        else:
+                            gender = "Other"
+                    else:
+                        if gender.lower() == "male":
+                            gender = "Men"
+                        elif gender.lower() == "female":
+                            gender = "Women"
+                else:
+                    age = 0
+                    gender = "Unisex"
+                        
+                category_dict = recommend_fashion(
+                                    gender=gender,
+                                    baseColour=[color.strip() for color in (preferred_color or "").split(',')],
+                                    preferredFabrics=[fabrics.strip() for fabrics in (preferred_fabrics or "").split(',')],
+                                    preferredStyles=[styles.strip() for styles in (preferred_styles or "").split(',')],
+                                    occasionTypes=[occasion.strip() for occasion in (occasion_types or "").split(',')],
+                                    styleGoals=[goal.strip() for goal in (style_goals or "").split(',')],
+                                    bodyType=body_type
+                                )
+
                 
                 # Format date
-
-                date_obj = datetime.strptime(str(date_of_birth), "%Y-%m-%d")
-                f_date_of_birth = date_obj.strftime("%B %d, %Y")
-
-                if gender.lower() == 'male':
-                    profile_image = 'male-avatar.png'
-                elif gender.lower() == 'other':
-                    profile_image = 'other-avatar.png'
+                if date_of_birth:
+                    date_obj = datetime.strptime(str(date_of_birth), "%Y-%m-%d")
+                    f_date_of_birth = date_obj.strftime("%B %d, %Y")
                 else:
-                    profile_image = 'female-avatar.png'
+                    # Handle the case where date_of_birth is None
+                    f_date_of_birth = "Unknown"  # Or use a default value like "January 01, 2000"
 
-                filters = [gender, '25', body_type, preferred_color, preferred_fabrics, preferred_styles, occasion_types, style_goals, skin_color]
+                if gender.lower() == 'boys':
+                    profile_image = 'avatar-1.png'
+                elif gender.lower() == 'girls':
+                    profile_image = 'avatar-2.png'
+                elif gender.lower() == 'men':
+                    profile_image = 'male-avatar.png'
+                elif gender.lower() == 'women':
+                    profile_image = 'avatar-3.png'
+                else:
+                    profile_image = 'avatar-4.png'
+
                 
-                finder = FashionFinder()
-
-                formal_results = finder.search_google_api("winter fashion", filters)
-                time.sleep(1)
-                formal_results_2 = finder.search_google_api("winter fashion", filters)
-                time.sleep(1)
-                casual_results = finder.search_google_api("casual fashion", filters)
-                time.sleep(1)
-                casual_results_2 = finder.search_google_api("casual fashion", filters)
+                
+                # Fetch trove data based on the filters
 
                 # Pass all data to the template
                 return render_template(
@@ -242,8 +276,7 @@ class Profile:
                     one_word_user=user_title,
                     paragraph_1=user_about_1,
                     paragraph_2=user_about_2,
-                    formal_results=formal_results + formal_results_2,
-                    casual_results=casual_results + casual_results_2
+                    category_dict=category_dict
                 )
             else:
                 # If no user info is found, redirect to login or show an error
@@ -253,40 +286,78 @@ class Profile:
             return redirect(url_for('login'))
 
     def quiz(self):
+        profile_pic_filename = None
+        wardrobe_img_filename = None
+        date_of_birth = None
+        user_title = None
+        user_about_1 = "No title available"  # Default value
+        user_about_2 = "No description available"  # Default value
+        gender = 'Other' # Default value
+        body_type = None # Default value
+        skin_color = None
+
         if request.method == 'POST':
             # Get quiz data from the form
-            profile_pic = request.files['profile_pic']
-            gender = request.form['gender']
-            date_of_birth = request.form['date_of_birth']
-            body_type = request.form['body_type']
-            height = request.form['height']
-            weight = request.form['weight']
-            preferred_color = request.form['preferred_color']
-            preferred_fabrics = request.form['preferred_fabrics']
-            preferred_styles = request.form['preferred_styles']
-            occasion_types = request.form['occasion_types']
-            style_goals = request.form['style_goals']
-            budget = request.form['budget']
-            skin_color = request.form['skin_color']
-            wardrobe_img = request.files['wardrobe_img']
+            profile_pic = request.files.get('profile_pic')
+            gender = request.form.get('gender') or None
+            date_of_birth_str = request.form['date_of_birth'] or None
+            body_type = request.form.get('body_type') or None
+            height = request.form['height'] or None
+            weight = request.form['weight'] or None
+            preferred_color = request.form['preferred_color'] or None
+            preferred_fabrics = request.form['preferred_fabrics'] or None
+            preferred_styles = request.form['preferred_styles'] or None
+            occasion_types = request.form['occasion_types'] or None
+            style_goals = request.form['style_goals'] or None
+            budget = request.form['budget'] or 0
+            skin_color = request.form.get('skin_color') or None
+            wardrobe_img = request.files.get('wardrobe_img')
+        
+            print("Form Data:", request.form)
+            print("Files:", request.files)
+
+            if date_of_birth_str:
+                try:
+                    date_of_birth = datetime.strptime(date_of_birth_str, "%Y-%m-%d").date()  # Convert to date format
+                    current_date = date.today()
+                    age = current_date.year - date_of_birth.year - ((current_date.month, current_date.day) < (date_of_birth.month, date_of_birth.day))
+                except ValueError:
+                    return render_template('quiz.html', title='Fashion Quiz', message="Invalid date format. Please enter a valid date.")
+
+            # Ensure age-based gender adjustment only runs if date_of_birth is valid
+            if gender == 'Male' and date_of_birth:
+                gender = 'Boys' if age < 18 else 'Men'
+            elif gender == 'Female' and date_of_birth:
+                gender = 'Girls' if age < 18 else 'Women'
+
 
             user_details = session.get('user_details')
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-            profile_pic_filename = f"{user_details['username']}_{timestamp}_{secure_filename(profile_pic.filename)}"
-            wardrobe_img_filename = f"{user_details['username']}_{timestamp}_{secure_filename(wardrobe_img.filename)}"
+            
+            if wardrobe_img:
+                wardrobe_img_filename = f"{user_details['username']}_{timestamp}_{secure_filename(wardrobe_img.filename)}"
+                wardrobe_img_path = os.path.join(WARDROBE_IMG_FOLDER, wardrobe_img_filename)
+                wardrobe_img.save(wardrobe_img_path)
 
-            profile_pic_path = os.path.join(PROFILE_PIC_FOLDER, profile_pic_filename)
-            wardrobe_img_path = os.path.join(WARDROBE_IMG_FOLDER, wardrobe_img_filename)
+            if profile_pic:
+                profile_pic_filename = f"{user_details['username']}_{timestamp}_{secure_filename(profile_pic.filename)}"
 
-            profile_pic.save(profile_pic_path)
-            wardrobe_img.save(wardrobe_img_path)
+                profile_pic_path = os.path.join(PROFILE_PIC_FOLDER, profile_pic_filename)
 
-            prompt = f"""
+                profile_pic.save(profile_pic_path)
+
+                detected_tone_hex, recommended_colors, gender_category, detected_age, outfits = process_fashion_recommendation(profile_pic_path)
+                
+                print("****************************************************************")
+                print(detected_tone_hex, recommended_colors, gender_category, detected_age, outfits)
+
+            if user_details['name'] and gender and date_of_birth_str and body_type and height and weight and preferred_color and preferred_fabrics and preferred_styles and occasion_types and style_goals and skin_color:
+                prompt = f"""
                     Generate a professionally written, engaging, and personalized "About" section for a user profile in two short paragraphs (90-105 words in total). The content should impress the reader and reflect the user's unique style and preferences. Use the following details:
                     - Name: {user_details['name']}
                     - Gender: {gender}  
-                    - Age: {date_of_birth}  
+                    - Age: {date_of_birth_str}  
                     - Body Type: {body_type}  
                     - Height: {height}  
                     - Weight: {weight}  
@@ -300,13 +371,13 @@ class Profile:
                     Ensure the language is elegant, concise, and makes the user sound fashion-forward and confident. Avoid repetition and use positive, inspiring vocabulary.
                     """
             
-            response = chat. send_message (prompt)
-            paragraph = response.text
-            paragraph = paragraph.split("\n\n")
-            user_about_1 = paragraph[0]
-            user_about_2 = paragraph[1]
+                response = chat. send_message (prompt)
+                paragraph = response.text
+                paragraph = paragraph.split("\n\n")
+                user_about_1 = paragraph[0]
+                user_about_2 = paragraph[1]
             
-            prompt = f"""
+                prompt = f"""
                     Using the following details about a user, provide one word that best describes the overall style or impression of the individual. Focus solely on the most fitting adjective or noun that reflects the user's fashion preferences, style goals, and persona. Do not add any special characters like asterisks or quotation marks—just return the word itself.
 
                     Details:
@@ -324,17 +395,20 @@ class Profile:
                     - Skin Color: {skin_color}
                     """
 
-            response = chat.send_message(prompt)
-            clean_output = response.text.strip().replace('*', '')  # Removing any asterisks
-            user_title = clean_output
-            # Ensure budget is a valid number (float)
+                response = chat.send_message(prompt)
+                clean_output = response.text.strip().replace('*', '')  # Removing any asterisks
+                user_title = clean_output
+                # Ensure budget is a valid number (float)
             try:
-                budget = float(budget)
+                budget = float(budget) if budget else None
             except ValueError:
                 return render_template('quiz.html', title='Fashion Quiz', message="Please enter a valid number for the budget.")
 
             # Get user details from session
-            user_details = session.get('user_details')
+            user_details = session.get('user_details', {})
+            if not user_details:
+                return redirect(url_for('login'))  # Redirect if session data is missing
+
 
             if user_details:
                 # Insert into login table
@@ -353,23 +427,23 @@ class Profile:
                                         VALUES (:username, :profile_pic, :gender, :date_of_birth, :body_type, :height, :weight, :preferred_color, :preferred_fabrics, :preferred_styles, :occasion_types, :style_goals, :budget, :skin_color, :wardrobe_img, :user_title, :user_about_1, :user_about_2)''')
                 self.db.session.execute(insert_query_info, {
                     'username': user_details['username'],
-                    'profile_pic': profile_pic_filename,
-                    'gender': gender,
-                    'date_of_birth': date_of_birth,
-                    'body_type': body_type,
-                    'height': height,
-                    'weight': weight,
-                    'preferred_color': preferred_color,
-                    'preferred_fabrics': preferred_fabrics,
-                    'preferred_styles': preferred_styles,
-                    'occasion_types': occasion_types,
-                    'style_goals': style_goals,
-                    'budget': budget,  # Ensure this is a valid number
+                    'profile_pic': profile_pic_filename or None,
+                    'gender': gender or None,
+                    'date_of_birth': date_of_birth or None,
+                    'body_type': body_type or None,
+                    'height': height or None,
+                    'weight': weight or None,
+                    'preferred_color': preferred_color or None,
+                    'preferred_fabrics': preferred_fabrics or None,
+                    'preferred_styles': preferred_styles or None,
+                    'occasion_types': occasion_types or None,
+                    'style_goals': style_goals or None,
+                    'budget': budget or None,  # Ensure this is a valid number
                     'skin_color': skin_color,
-                    'wardrobe_img': wardrobe_img_filename,
-                    'user_title': user_title,
-                    'user_about_1': user_about_1,
-                    'user_about_2': user_about_2
+                    'wardrobe_img': wardrobe_img_filename or None,
+                    'user_title': user_title or None,
+                    'user_about_1': user_about_1 or None,
+                    'user_about_2': user_about_2 or None,
                 })
                 self.db.session.commit()
 

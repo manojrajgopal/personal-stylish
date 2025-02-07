@@ -13,7 +13,7 @@ body{
     justify-content: center;
     background: hsl(0, 0%, 93%);
 }
-.container{
+.container {
     position: relative;
     max-width: 900px;
     width: 100%;
@@ -44,7 +44,13 @@ body{
     margin-top: 16px;
     min-height: 490px;
     background-color: #fff;
-    overflow: hidden;
+    overflow: visible;
+    height: auto;
+    overflow-y: scroll;
+}
+/* Hide the scrollbar while allowing scrolling */
+.container form::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
 }
 .container form .form{
     position: absolute;
@@ -167,4 +173,8 @@ form .buttons button , .backBtn{
     form .fields .input-field{
         width: 100%;
     }
+    /* Hide the scrollbar while allowing scrolling */
+.container form::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
 }
